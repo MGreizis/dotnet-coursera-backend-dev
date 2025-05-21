@@ -1,11 +1,24 @@
-namespace CshBackendDev.Models
+namespace CshBackendDev.Models;
+
+using System.ComponentModel.DataAnnotations;
+
+public class User
 {
-  public class User
-  {
-    public int Id { get; set; }
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Department { get; set; } = string.Empty;
-  }
+  public int Id { get; set; }
+
+  [Required]
+  [StringLength(100)]
+  public string FirstName { get; set; } = string.Empty;
+
+  [Required]
+  [StringLength(100)]
+  public string LastName { get; set; } = string.Empty;
+
+  [Required]
+  [EmailAddress]
+  public string Email { get; set; } = string.Empty;
+
+  [Required]
+  [StringLength(100)]
+  public string Department { get; set; } = string.Empty;
 }

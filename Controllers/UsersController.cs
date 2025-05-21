@@ -19,39 +19,76 @@ namespace CshBackendDev.Controllers
     [HttpGet]
     public IActionResult GetAllUsers()
     {
-      return Ok(_repo.GetAll());
+      try
+      {
+        return Ok(_repo.GetAll());
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+      }
     }
 
-    // GET: api/users/{id}
     [HttpGet("{id}")]
     public IActionResult GetUserById(int id)
     {
-      var user = _repo.GetById(id);
-      return user == null ? NotFound() : Ok(user);
+      try
+      {
+        var user = _repo.GetById(id);
+        return user == null ? NotFound($"User with ID {id} not found.") : Ok(user);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+      }
     }
 
-    // POST: api/users
     [HttpPost]
     public IActionResult CreateUser([FromBody] User user)
     {
-      var createdUser = _repo.Add(user);
-      return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+      if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+      try
+      {
+        var createdUser = _repo.Add(user);
+        return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+      }
     }
 
-    // PUT: api/users/{id}
     [HttpPut("{id}")]
     public IActionResult UpdateUser(int id, [FromBody] User user)
     {
-      var updated = _repo.Update(id, user);
-      return updated ? NoContent() : NotFound();
+      if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+      try
+      {
+        var updated = _repo.Update(id, user);
+        return updated ? NoContent() : NotFound($"User with ID {id} not found.");
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+      }
     }
 
-    // DELETE: api/users/{id}
     [HttpDelete("{id}")]
     public IActionResult DeleteUser(int id)
     {
-      var deleted = _repo.Delete(id);
-      return deleted ? NoContent() : NotFound();
+      try
+      {
+        var deleted = _repo.Delete(id);
+        return deleted ? NoContent() : NotFound($"User with ID {id} not found.");
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+      }
     }
   }
 }
